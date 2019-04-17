@@ -1,5 +1,28 @@
 
+#include <SoftwareSerial.h> 
 
+
+int bluetoothTx = 4;  //2;  // TX-O pin of bluetooth mate, Arduino D2
+int bluetoothRx = 5;  //3;  // RX-I pin of bluetooth mate, Arduino D3
+unsigned long bluetoothTimer;
+
+SoftwareSerial bluetooth(bluetoothTx, bluetoothRx);
+
+void bluetoothSetup()
+{
+  //
+  // Bluetooth Setup
+  //
+  bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
+  bluetooth.print("$");  // Print three times individually
+  bluetooth.print("$");
+  bluetooth.print("$");  // Enter command mode
+  delay(100);  // Short delay, wait for the Mate to send back CMD
+  bluetooth.println("U,9600,N");  // Temporarily Change the baudrate to 9600, no parity
+  // 115200 can be too fast at times for NewSoftSerial to relay the data reliably
+  bluetooth.begin(9600);  // Start bluetooth serial at 9600
+  bluetoothTimer = millis();  
+}
 
 void bluetoothInterface()
 {
@@ -10,9 +33,11 @@ void bluetoothInterface()
 
     if (readline(bluetooth.read(), buffer, 80) > 0) 
     {
-      Serial.println( "BT Command: " );
-      Serial.println( buffer );   
-      Serial.println( "\r\n" );
+      #ifdef DEBUG        
+        Serial.println( "BT Command: " );
+        Serial.println( buffer );   
+        Serial.println( "\r\n" );
+      #endif
       displayMessage( buffer ); 
       memset(buffer, 0, sizeof(buffer));
     }

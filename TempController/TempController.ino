@@ -6,8 +6,6 @@
 #include <Wire.h>
 //#include <LiquidCrystal.h>
 #include <LiquidCrystal_I2C.h>
-// Bluethooth includes
-#include <SoftwareSerial.h> 
 
 // #define DEBUG 1
 
@@ -26,13 +24,6 @@
 #define D6_pin  6
 #define D7_pin  7
 
-int rotPinA = 10;  // Connected to CLK on KY-040
-int rotPinB = 3;  // 11;  // Connected to DT on KY-040
-int rotButtonPin = 12; // Should be12
-int rotPinALast;  
-int rotAVal;
-int rotBVal;
-
 float tempC;  // Current Temprature
 
 int RelayHeat = 6;
@@ -44,12 +35,6 @@ const int RELAY_COOL = 2;
 int RelayStatus = RELAY_NONE;
 
 
-int bluetoothTx = 4;  //2;  // TX-O pin of bluetooth mate, Arduino D2
-int bluetoothRx = 5;  //3;  // RX-I pin of bluetooth mate, Arduino D3
-unsigned long bluetoothTimer;
-
-SoftwareSerial bluetooth(bluetoothTx, bluetoothRx);
-
 const int SCREENMODE_DISPLAYTEMP = 1;
 const int SCREENMODE_SETUP = 2;
 const int SCREENMODE_SCREEN_SAVER = 3;
@@ -60,28 +45,15 @@ const int DISPLAYMODE_TARGET  = 1;
 const int DISPLAYMODE_MINMAX  = 2;
 int currentDisplayMode = DISPLAYMODE_MAIN;
 
-
 unsigned long screenTime;
-
-const int SETUP_ITEM_TEMP = 1;
-const int SETUP_ITEM_UNIT = 2;
-const int SETUP_ITEM_DEVIATION = 3;
-const int SETUP_ITEM_DONE = 4;
-
-int setupItem = SETUP_ITEM_TEMP;
 
 const int UNIT_FARENHEIGHT = 1;
 const int UNIT_CELSIUS = 2;
 int unit =  UNIT_FARENHEIGHT;
 
-float deviation = 0.2;
+float deviation = 1.0;
 int targetTemp = 22;
 unsigned long tempratureTimer;
-
-const int EDIT_START = 0;
-const int EDIT_NONE = 1;
-const int EDIT_ACTIVE = 2;
-int editMode = EDIT_START;
 
 LiquidCrystal_I2C lcd(I2C_ADDR,
                       En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin,
@@ -168,16 +140,9 @@ void setup(void)
   Serial.println();
   Serial.print( "Setting up Rotary Encoder" );
   //rotary encoder setup
-  pinMode (rotPinA,INPUT);
-  pinMode (rotPinB,INPUT);
-  pinMode (rotButtonPin, INPUT);
-   /* Read Pin A
-   Whatever state it's in will reflect the last position   
-   */
-  attachInterrupt(digitalPinToInterrupt(rotPinB), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
- 
-   rotPinALast = digitalRead(rotPinA);   
-   Serial.begin (9600);
+
+  rotarySetup();
+  Serial.begin (9600);
 
   //
   //  Releay Switch Setup
@@ -188,20 +153,9 @@ void setup(void)
   digitalWrite(RelayCool, HIGH); //Turn off relay 
   RelayStatus = RELAY_NONE;
 
-  //
-  // Bluetooth Setup
-  //
-  bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
-  bluetooth.print("$");  // Print three times individually
-  bluetooth.print("$");
-  bluetooth.print("$");  // Enter command mode
-  delay(100);  // Short delay, wait for the Mate to send back CMD
-  bluetooth.println("U,9600,N");  // Temporarily Change the baudrate to 9600, no parity
-  // 115200 can be too fast at times for NewSoftSerial to relay the data reliably
-  bluetooth.begin(9600);  // Start bluetooth serial at 9600
-
+  bluetoothSetup();
+  
   screenTime = millis();
-  bluetoothTimer = millis();
   tempratureTimer = millis();
 
   delay( 4000 );
@@ -212,17 +166,12 @@ void setup(void)
 
 void loop(void)
 { 
-  // Serial.println( "loop 1" );    
   if(screenMode != SCREENMODE_SETUP ){
     temperatureInterface();
     relayControl();
-  }
-  
-  rotary();
-
-  if( screenMode != SCREENMODE_SETUP ){
     bluetoothInterface();
   }
+  rotary();
 }
 
 
