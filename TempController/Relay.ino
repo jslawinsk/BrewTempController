@@ -17,7 +17,7 @@ void relayControl()
   //  To stop trigger change when temp is on a margin 
   //
   if( relayTimer + 60000 < currentTime ){  
-    float curRepTemp = getDisplayTemperatureNum( tempC );
+    float curRepTemp = getDisplayTemperatureNum( currentTemprature );
     float TargetRepTemp = getDisplayTemperatureNum( targetTemp );
     if ( curRepTemp + deviation < TargetRepTemp ) {
       //
@@ -27,7 +27,9 @@ void relayControl()
       digitalWrite(RelayHeat, LOW); //Turn on relay
       digitalWrite(RelayCool, HIGH); //Turn off relay
       if ( RelayStatus != RELAY_HEAT ) {
-        Serial.println( "Heat On" );
+        #ifdef DEBUG
+          Serial.println( "Heat On" );
+        #endif
         RelayStatus = RELAY_HEAT;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
           lcd.setCursor ( 3, 1 );            // go to the 2nd row
@@ -39,7 +41,9 @@ void relayControl()
       digitalWrite(RelayHeat, HIGH); //Turn off relay
       digitalWrite(RelayCool, LOW); //Turn on relay
       if ( RelayStatus != RELAY_COOL ) {
-        Serial.println( "Cooling On" );
+        #ifdef DEBUG
+          Serial.println( "Cooling On" );
+        #endif
         RelayStatus = RELAY_COOL;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
           lcd.setCursor ( 13, 1 );            // go to the 2nd row
@@ -51,7 +55,9 @@ void relayControl()
       digitalWrite(RelayHeat, HIGH); //Turn off relay
       digitalWrite(RelayCool, HIGH); //Turn off relay
       if ( RelayStatus != RELAY_NONE ) {
-        Serial.println( "Heat and cooling off" );
+        #ifdef DEBUG
+          Serial.println( "Heat and cooling off" );
+        #endif
         RelayStatus = RELAY_NONE;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
           lcd.setCursor ( 3, 1 );            // go to the 2nd row

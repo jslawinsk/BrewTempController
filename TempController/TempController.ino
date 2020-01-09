@@ -24,7 +24,7 @@
 #define D6_pin  6
 #define D7_pin  7
 
-float tempC;  // Current Temprature
+float currentTemprature;  // Current Temprature store in farenheight
 
 int RelayHeat = 6;
 int RelayCool = 7;
@@ -32,6 +32,8 @@ int RelayCool = 7;
 const int RELAY_NONE = 0;
 const int RELAY_HEAT = 1;
 const int RELAY_COOL = 2;
+const int RELAY_OVERRIDE_HEAT = 3;
+const int RELAY_OVERRIDE_COOL = 4;
 int RelayStatus = RELAY_NONE;
 
 
@@ -52,7 +54,7 @@ const int UNIT_CELSIUS = 2;
 int unit =  UNIT_FARENHEIGHT;
 
 float deviation = 1.0;
-int targetTemp = 22;
+int targetTemp = 70;
 unsigned long tempratureTimer;
 
 LiquidCrystal_I2C lcd(I2C_ADDR,
@@ -182,7 +184,7 @@ void printTemperature(DeviceAddress deviceAddress)
 {
     if(screenMode == SCREENMODE_DISPLAYTEMP ){
       lcd.setCursor (5,0);         // go to col 16 of the last row
-      lcd.print( getDisplayTemperature( tempC ) );           // update the display with a new number
+      lcd.print( getDisplayTemperature( currentTemprature ) );           // update the display with a new number
   
       //
       //  Screensaver code
@@ -196,25 +198,26 @@ void printTemperature(DeviceAddress deviceAddress)
     }
 }
 
-String getDisplayTemperature( float tempC ){
+String getDisplayTemperature( float tempF ){
     String strTemp = "";
-    if(unit == UNIT_CELSIUS)
+    if(unit == UNIT_FARENHEIGHT)
     {
-      strTemp = String(tempC);
+      strTemp = String(tempF);
     }
     else{
-      float tempF = DallasTemperature::toFahrenheit(tempC);
+      float tempF = DallasTemperature::toCelsius( tempF );
       strTemp = String(tempF);
     }
     strTemp = strTemp.substring( 0, 4 );
     return strTemp;
 }
 
-float getDisplayTemperatureNum( float tempC ){
-    float nTemp = tempC;
-    if(unit == UNIT_FARENHEIGHT)
+float getDisplayTemperatureNum( float tempF ){
+    float nTemp = tempF;
+    if(unit == UNIT_CELSIUS)
     {
-      nTemp = DallasTemperature::toFahrenheit(tempC);
+      nTemp = DallasTemperature::toCelsius(tempF);
+      //nTemp = DallasTemperature::toFahrenheit(tempC);
     }
     return nTemp;
 }
@@ -240,18 +243,19 @@ void temperatureInterface()
         // Output the device ID
         //    Serial.print("Temperature for device: ");
         //    Serial.println(i,DEC);
-        tempC = sensors.getTempC(tempDeviceAddress);
-        if(tempC >= max)
+        float tempC = sensors.getTempC(tempDeviceAddress);
+        currentTemprature = DallasTemperature::toFahrenheit(tempC);
+        if(currentTemprature >= max)
         {
-          max = tempC;
+          max = currentTemprature;
           if( currentDisplayMode == DISPLAYMODE_MINMAX ){
             lcd.setCursor ( 11, 1 );            // go to the 2nd row
             lcd.print( getDisplayTemperature( max ) ); // pad string with spaces for centering
           }
         }
-        if(tempC <= min)
+        if(currentTemprature <= min)
         {
-          min = tempC;
+          min = currentTemprature;
           if( currentDisplayMode == DISPLAYMODE_MINMAX ){
             lcd.setCursor ( 3, 1 );            // go to the 2nd row
             lcd.print( getDisplayTemperature( min ) ); // pad string with spaces for centering

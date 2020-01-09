@@ -40,8 +40,10 @@ void rotary() {
   if( !(digitalRead(rotButtonPin)) ){
     delay( 100 );
     while( !(digitalRead(rotButtonPin)) );
-    Serial.println( "Button Pressed" );
-
+    #ifdef DEBUG
+      Serial.println( "Button Pressed" );
+    #endif
+    
     if( screenMode == SCREENMODE_SCREEN_SAVER ){
       screenMode = SCREENMODE_DISPLAYTEMP;
       lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
@@ -151,22 +153,30 @@ void setSettings( )
     setupItem = SETUP_ITEM_DONE;
   }
   lcd.noCursor();
-  Serial.println( " " );
-  Serial.println( "ScreenMode: " + String( screenMode ) );
-  Serial.println( "Edit Mode:" + String(editMode) + " Setup Item: " + String(setupItem) );
+  #ifdef DEBUG
+    Serial.println( " " );
+    Serial.println( "ScreenMode: " + String( screenMode ) );
+    Serial.println( "Edit Mode:" + String(editMode) + " Setup Item: " + String(setupItem) );
+  #endif
   switch(setupItem){
     case SETUP_ITEM_TEMP:
       if( editMode != EDIT_ACTIVE ){
-        Serial.println( "Display temp" );
+        #ifdef DEBUG
+          Serial.println( "Display temp" );
+        #endif
         lcd.clear();
         lcd.setCursor ( 0, 0 );            
         lcd.print("Target Temp"); 
       }
       else{
-        Serial.println( "Update temp" );
+        #ifdef DEBUG
+          Serial.println( "Update temp" );
+        #endif
         targetTemp = targetTemp + rotationValue;
       }
-      Serial.println( "Traget Temp: " + String( targetTemp ) + " : " + getDisplayTemperature( targetTemp ) );
+      #ifdef DEBUG
+        Serial.println( "Traget Temp: " + String( targetTemp ) + " : " + getDisplayTemperature( targetTemp ) );
+      #endif
       lcd.setCursor ( 0, 1 );
       lcd.print( getDisplayTemperature( targetTemp ) );          
       break;
