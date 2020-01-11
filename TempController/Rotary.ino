@@ -17,7 +17,8 @@ int editMode = EDIT_START;
 const int SETUP_ITEM_TEMP = 1;
 const int SETUP_ITEM_UNIT = 2;
 const int SETUP_ITEM_DEVIATION = 3;
-const int SETUP_ITEM_DONE = 4;
+const int SETUP_ITEM_CONTROL = 4;
+const int SETUP_ITEM_DONE = 5;
 int setupItem = SETUP_ITEM_TEMP;
 
 void rotarySetup(){
@@ -224,6 +225,34 @@ void setSettings( )
      lcd.setCursor ( 0, 1 );
      lcd.print( deviation );          
      break;
+    case SETUP_ITEM_CONTROL:
+      if( editMode != EDIT_ACTIVE ){
+        lcd.clear();
+        lcd.setCursor ( 0, 0 );            
+        lcd.print("Control"); 
+      }
+      else{
+        if ( controlMode == CONTROL_AUTO ){
+          controlMode = CONTROL_HEAT;
+        }
+        else if(controlMode == CONTROL_HEAT ){
+          controlMode = CONTROL_COOL;
+        }
+        else if(controlMode == CONTROL_COOL ){
+          controlMode = CONTROL_AUTO;
+        }
+      }
+      lcd.setCursor ( 0, 1 );
+      if( controlMode == CONTROL_AUTO ){
+          lcd.print( "Auto" ); 
+      }
+      else if( controlMode == CONTROL_HEAT ){
+          lcd.print( "Heat" ); 
+      }
+      else{
+          lcd.print("Cool");
+      }
+      break;
     case SETUP_ITEM_DONE:
       if( editMode != EDIT_ACTIVE ){
         lcd.clear();

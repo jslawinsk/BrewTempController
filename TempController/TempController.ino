@@ -36,6 +36,11 @@ const int RELAY_OVERRIDE_HEAT = 3;
 const int RELAY_OVERRIDE_COOL = 4;
 int RelayStatus = RELAY_NONE;
 
+const int CONTROL_AUTO = 0;
+const int CONTROL_HEAT = 1;
+const int CONTROL_COOL = 2;
+int controlMode = CONTROL_AUTO;
+
 
 const int SCREENMODE_DISPLAYTEMP = 1;
 const int SCREENMODE_SETUP = 2;
@@ -243,8 +248,9 @@ void temperatureInterface()
         // Output the device ID
         //    Serial.print("Temperature for device: ");
         //    Serial.println(i,DEC);
-        float tempC = sensors.getTempC(tempDeviceAddress);
-        currentTemprature = DallasTemperature::toFahrenheit(tempC);
+        //float tempC = sensors.getTempC(tempDeviceAddress);
+        //currentTemprature = DallasTemperature::toFahrenheit(tempC);
+        currentTemprature = sensors.getTempF(tempDeviceAddress);
         if(currentTemprature >= max)
         {
           max = currentTemprature;

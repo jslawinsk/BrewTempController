@@ -55,6 +55,24 @@ void bluetoothInterface()
             setTempratureTemplate();
           }
         }
+        else if( strCommand.startsWith( "CONTROL:" ) ){
+          String strControl = strCommand.substring( 8 );
+          if( strControl == "AUTO" ){
+            controlMode = CONTROL_AUTO;
+          }
+          else if( strControl == "HEAT_ON" ){
+            controlMode = CONTROL_HEAT;
+          }
+          else if( strControl == "COOL_ON" ){
+            controlMode = CONTROL_COOL;
+          }
+          #ifdef DEBUG
+            Serial.println( "Control: " + strControl );
+          #endif
+          if( currentDisplayMode == DISPLAYMODE_MAIN ){
+            setTempratureTemplate();
+          }          
+        }
       }
       memset(buffer, 0, sizeof(buffer));
     }
@@ -67,26 +85,24 @@ void bluetoothInterface()
     // Send any characters the Serial monitor prints to the bluetooth
     String cool = "OFF";
     String heat = "OFF";
-    String trigger = "Auto";
+    String control = "Auto";
     if( RelayStatus == RELAY_HEAT ){
       heat = "ON";
     }
     else if( RelayStatus == RELAY_COOL ){
       cool = "ON";
     }
-    else if( RelayStatus == RELAY_OVERRIDE_HEAT ){
-      heat = "ON";
-      trigger = "Heat";
+    if( controlMode == CONTROL_HEAT ){
+      control = "Heat";
     }
-    else if( RelayStatus == RELAY_OVERRIDE_COOL ){
-      cool = "ON";
-      trigger = "Cool";
+    else if( controlMode == CONTROL_COOL ){
+      control = "Cool";
     }
     String dataPacket = "{\"temperature\":" + String( currentTemprature );
     dataPacket = dataPacket + ", \"target\":" + targetTemp;
     dataPacket = dataPacket + ", \"heat\":\"" + heat + "\"";
     dataPacket = dataPacket + ", \"cool\":\"" + cool + "\"";
-    dataPacket = dataPacket + ", \"trigger\":\"" + trigger + "\"";
+    dataPacket = dataPacket + ", \"control\":\"" + control + "\"";
     dataPacket = dataPacket + "}";
     bluetooth.print( dataPacket );
     bluetooth.print( "\n" );

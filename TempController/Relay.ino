@@ -19,7 +19,7 @@ void relayControl()
   if( relayTimer + 60000 < currentTime ){  
     float curRepTemp = getDisplayTemperatureNum( currentTemprature );
     float TargetRepTemp = getDisplayTemperatureNum( targetTemp );
-    if ( curRepTemp + deviation < TargetRepTemp ) {
+    if ( curRepTemp + deviation < TargetRepTemp || controlMode == CONTROL_HEAT ) {
       //
       //  Too Cold
       //  Turn On Heat, Turn OffCool
@@ -34,10 +34,12 @@ void relayControl()
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
           lcd.setCursor ( 3, 1 );            // go to the 2nd row
           lcd.print( "On " ); 
+          lcd.setCursor ( 13, 1 );            // go to the 2nd row
+          lcd.print( "Off" ); 
         }
       }
     }
-    else if ( curRepTemp - deviation > TargetRepTemp ) {
+    else if ( curRepTemp - deviation > TargetRepTemp || controlMode == CONTROL_COOL ) {
       digitalWrite(RelayHeat, HIGH); //Turn off relay
       digitalWrite(RelayCool, LOW); //Turn on relay
       if ( RelayStatus != RELAY_COOL ) {
@@ -46,6 +48,8 @@ void relayControl()
         #endif
         RelayStatus = RELAY_COOL;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
+          lcd.setCursor ( 3, 1 );            // go to the 2nd row
+          lcd.print( "Off" ); 
           lcd.setCursor ( 13, 1 );            // go to the 2nd row
           lcd.print( "On " ); 
         }
