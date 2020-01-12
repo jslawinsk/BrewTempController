@@ -41,6 +41,7 @@ const int CONTROL_HEAT = 1;
 const int CONTROL_COOL = 2;
 int controlMode = CONTROL_AUTO;
 
+boolean controlCommandReceived = false;
 
 const int SCREENMODE_DISPLAYTEMP = 1;
 const int SCREENMODE_SETUP = 2;

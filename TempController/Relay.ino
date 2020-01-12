@@ -16,7 +16,7 @@ void relayControl()
   //  Engage relay change only at 1 minute intevals
   //  To stop trigger change when temp is on a margin 
   //
-  if( relayTimer + 60000 < currentTime ){  
+  if( relayTimer + 60000 < currentTime || controlCommandReceived ){  
     float curRepTemp = getDisplayTemperatureNum( currentTemprature );
     float TargetRepTemp = getDisplayTemperatureNum( targetTemp );
     if ( curRepTemp + deviation < TargetRepTemp || controlMode == CONTROL_HEAT ) {

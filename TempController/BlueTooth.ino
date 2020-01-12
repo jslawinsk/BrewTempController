@@ -59,19 +59,24 @@ void bluetoothInterface()
           String strControl = strCommand.substring( 8 );
           if( strControl == "AUTO" ){
             controlMode = CONTROL_AUTO;
+            controlCommandReceived = true;
           }
           else if( strControl == "HEAT_ON" ){
             controlMode = CONTROL_HEAT;
+            controlCommandReceived = true;
           }
           else if( strControl == "COOL_ON" ){
             controlMode = CONTROL_COOL;
+            controlCommandReceived = true;
           }
           #ifdef DEBUG
             Serial.println( "Control: " + strControl );
           #endif
+          /*
           if( currentDisplayMode == DISPLAYMODE_MAIN ){
             setTempratureTemplate();
-          }          
+          } 
+          */         
         }
       }
       memset(buffer, 0, sizeof(buffer));
