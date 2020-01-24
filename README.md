@@ -11,6 +11,7 @@ In the below diagram the encapsulated green boxes indicates this components arch
 
 To Do:
 - [X] Bluetooth update to send data to Brewery Services API
+- [X] Bluetooth update to recieve commands from Brewery Services
 - [ ] Temperature Calibration
 - [ ] Security
 - [ ] Authentication
