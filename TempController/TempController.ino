@@ -4,25 +4,10 @@
 #include <DallasTemperature.h>
 //LCD includes
 #include <Wire.h>
-//#include <LiquidCrystal.h>
-#include <LiquidCrystal_I2C.h>
+#include <hd44780.h>
+#include <hd44780ioClass/hd44780_I2Cexp.h> // include i/o class header
 
 // #define DEBUG 1
-
-//LCD defines
-#define I2C_ADDR    0x27  // Define I2C Address where the PCF8574A is
-                          // Address can be changed by soldering A0, A1, or A2
-                          // Default is 0x27
-
-// map the pin configuration of LCD backpack for the LiquidCristal class
-#define BACKLIGHT_PIN 3
-#define En_pin  2
-#define Rw_pin  1
-#define Rs_pin  0
-#define D4_pin  4
-#define D5_pin  5
-#define D6_pin  6
-#define D7_pin  7
 
 float currentTemprature;  // Current Temprature store in farenheight
 
@@ -63,9 +48,8 @@ float deviation = 1.0;
 int targetTemp = 70;
 unsigned long tempratureTimer;
 
-LiquidCrystal_I2C lcd(I2C_ADDR,
-                      En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin,
-                      BACKLIGHT_PIN, POSITIVE);
+// LiquidCrystal Display
+hd44780_I2Cexp lcd; // declare lcd object: auto locate & config display for hd44780 chip
 
 //temp sensor defines
 
