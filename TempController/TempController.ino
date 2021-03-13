@@ -2,10 +2,6 @@
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
-//LCD includes
-#include <Wire.h>
-#include <hd44780.h>
-#include <hd44780ioClass/hd44780_I2Cexp.h> // include i/o class header
 
 // #define DEBUG 1
 
@@ -47,9 +43,6 @@ int unit =  UNIT_FARENHEIGHT;
 float deviation = 1.0;
 int targetTemp = 70;
 unsigned long tempratureTimer;
-
-// LiquidCrystal Display
-hd44780_I2Cexp lcd; // declare lcd object: auto locate & config display for hd44780 chip
 
 //temp sensor defines
 
@@ -152,7 +145,7 @@ void setup(void)
   tempratureTimer = millis();
 
   delay( 4000 );
-  lcd.clear();
+  lcdclear();
   setTempratureTemplate();  
 }
 
@@ -173,8 +166,8 @@ void loop(void)
 void printTemperature(DeviceAddress deviceAddress)
 {
     if(screenMode == SCREENMODE_DISPLAYTEMP ){
-      lcd.setCursor (5,0);         // go to col 16 of the last row
-      lcd.print( getDisplayTemperature( currentTemprature ) );           // update the display with a new number
+      lcdsetCursor (5,0);         // go to col 16 of the last row
+      lcdprint( getDisplayTemperature( currentTemprature ) );           // update the display with a new number
   
       //
       //  Screensaver code
@@ -183,7 +176,7 @@ void printTemperature(DeviceAddress deviceAddress)
       unsigned long currentTime = millis();
       if( screenTime + delayTime < currentTime ){
         screenMode = SCREENMODE_SCREEN_SAVER;
-        lcd.setBacklight(LOW);
+        lcdsetBacklightLOW();
       }
     }
 }
@@ -240,16 +233,16 @@ void temperatureInterface()
         {
           max = currentTemprature;
           if( currentDisplayMode == DISPLAYMODE_MINMAX ){
-            lcd.setCursor ( 11, 1 );            // go to the 2nd row
-            lcd.print( getDisplayTemperature( max ) ); // pad string with spaces for centering
+            lcdsetCursor ( 11, 1 );            // go to the 2nd row
+            lcdprint( getDisplayTemperature( max ) ); // pad string with spaces for centering
           }
         }
         if(currentTemprature <= min)
         {
           min = currentTemprature;
           if( currentDisplayMode == DISPLAYMODE_MINMAX ){
-            lcd.setCursor ( 3, 1 );            // go to the 2nd row
-            lcd.print( getDisplayTemperature( min ) ); // pad string with spaces for centering
+            lcdsetCursor ( 3, 1 );            // go to the 2nd row
+            lcdprint( getDisplayTemperature( min ) ); // pad string with spaces for centering
           }
         }
     }

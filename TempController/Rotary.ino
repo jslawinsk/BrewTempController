@@ -47,7 +47,7 @@ void rotary() {
     
     if( screenMode == SCREENMODE_SCREEN_SAVER ){
       screenMode = SCREENMODE_DISPLAYTEMP;
-      lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
+      lcdsetBacklightHIGH(); // Turn on backlight, LOW for off
       screenTime = millis();
     }
     else if( screenMode != SCREENMODE_SETUP ){
@@ -57,11 +57,11 @@ void rotary() {
     }
     if(screenMode ==  SCREENMODE_SETUP && setupItem == SETUP_ITEM_TEMP && editMode == EDIT_START )
     {
-      lcd.clear();
-      lcd.setCursor ( 0, 0 );            
-      lcd.print("Target Temp"); 
-      lcd.setCursor ( 0, 1 );
-      lcd.print( getDisplayTemperature( targetTemp ) );     
+      lcdclear();
+      lcdsetCursor ( 0, 0 );            
+      lcdprint("Target Temp"); 
+      lcdsetCursor ( 0, 1 );
+      lcdprint( getDisplayTemperature( targetTemp ) );     
     }
     if(screenMode == SCREENMODE_SETUP ){
       if (editMode == EDIT_START){
@@ -99,7 +99,7 @@ void rotary() {
     screenTime = millis(); 
     if( screenMode == SCREENMODE_SCREEN_SAVER ){
       screenMode = SCREENMODE_DISPLAYTEMP;
-      lcd.setBacklight(HIGH); 
+      lcdsetBacklightHIGH(); 
     }         
   }
 }
@@ -153,7 +153,7 @@ void setSettings( )
   {
     setupItem = SETUP_ITEM_DONE;
   }
-  lcd.noCursor();
+  lcdnoCursor();
   #ifdef DEBUG
     Serial.println( " " );
     Serial.println( "ScreenMode: " + String( screenMode ) );
@@ -165,9 +165,9 @@ void setSettings( )
         #ifdef DEBUG
           Serial.println( "Display temp" );
         #endif
-        lcd.clear();
-        lcd.setCursor ( 0, 0 );            
-        lcd.print("Target Temp"); 
+        lcdclear();
+        lcdsetCursor ( 0, 0 );            
+        lcdprint("Target Temp"); 
       }
       else{
         #ifdef DEBUG
@@ -178,17 +178,15 @@ void setSettings( )
       #ifdef DEBUG
         Serial.println( "Traget Temp: " + String( targetTemp ) + " : " + getDisplayTemperature( targetTemp ) );
       #endif
-      lcd.setCursor ( 0, 1 );
-      lcd.print( getDisplayTemperature( targetTemp ) );          
+      lcdsetCursor ( 0, 1 );
+      lcdprint( getDisplayTemperature( targetTemp ) );          
       break;
     case SETUP_ITEM_UNIT:
-      //lcd.print("<"); // pad string with spaces for centering
+      //lcdprint("<"); // pad string with spaces for centering
       if( editMode != EDIT_ACTIVE ){
-        lcd.clear();
-        //lcd.begin(16,2);        // 20 columns by 4 rows on display
-        // lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
-        lcd.setCursor ( 0, 0 );            
-        lcd.print("Temperature Units"); 
+        lcdclear();
+        lcdsetCursor ( 0, 0 );            
+        lcdprint("Temperature Units"); 
       }
       else{
         if (unit == UNIT_FARENHEIGHT){
@@ -198,21 +196,19 @@ void setSettings( )
           unit = UNIT_FARENHEIGHT;
         }
       }
-      lcd.setCursor ( 0, 1 );
+      lcdsetCursor ( 0, 1 );
       if(unit == UNIT_CELSIUS){
-          lcd.print( "Celsius    " ); 
+          lcdprint( "Celsius    " ); 
       }
       else{
-          lcd.print("Farenheight");
+          lcdprint("Farenheight");
       }
       break;
     case SETUP_ITEM_DEVIATION:
       if( editMode != EDIT_ACTIVE ){
-        lcd.clear();
-        //lcd.begin(16,2);        // 20 columns by 4 rows on display
-        // lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
-        lcd.setCursor ( 0, 0 );            
-        lcd.print("Deviation");            
+        lcdclear();
+        lcdsetCursor ( 0, 0 );            
+        lcdprint("Deviation");            
       }
       else{
         if ( rotationValue == 1 ){
@@ -222,14 +218,14 @@ void setSettings( )
           deviation -= 0.2;
         }
      }
-     lcd.setCursor ( 0, 1 );
-     lcd.print( deviation );          
+     lcdsetCursor ( 0, 1 );
+     lcdprint( deviation );          
      break;
     case SETUP_ITEM_CONTROL:
       if( editMode != EDIT_ACTIVE ){
-        lcd.clear();
-        lcd.setCursor ( 0, 0 );            
-        lcd.print("Control"); 
+        lcdclear();
+        lcdsetCursor ( 0, 0 );            
+        lcdprint("Control"); 
       }
       else{
         if ( controlMode == CONTROL_AUTO ){
@@ -242,27 +238,25 @@ void setSettings( )
           controlMode = CONTROL_AUTO;
         }
       }
-      lcd.setCursor ( 0, 1 );
+      lcdsetCursor ( 0, 1 );
       if( controlMode == CONTROL_AUTO ){
-          lcd.print( "Auto" ); 
+          lcdprint( "Auto" ); 
       }
       else if( controlMode == CONTROL_HEAT ){
-          lcd.print( "Heat" ); 
+          lcdprint( "Heat" ); 
       }
       else{
-          lcd.print("Cool");
+          lcdprint("Cool");
       }
       break;
     case SETUP_ITEM_DONE:
       if( editMode != EDIT_ACTIVE ){
-        lcd.clear();
-        // lcd.begin(16,2);        // 20 columns by 4 rows on display
-        // lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
-        lcd.setCursor ( 0, 0 );   
-        lcd.print("Exit"); 
+        lcdclear();
+        lcdsetCursor ( 0, 0 );   
+        lcdprint("Exit"); 
       }
-      //lcd.print("<"); // pad string with spaces for centering
+      //lcdprint("<"); // pad string with spaces for centering
       break;
   }
-  lcd.cursor();
+  lcdcursor();
 }

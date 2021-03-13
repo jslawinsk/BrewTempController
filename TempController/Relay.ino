@@ -33,10 +33,10 @@ void relayControl()
         #endif
         RelayStatus = RELAY_HEAT;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
-          lcd.setCursor ( 3, 1 );            // go to the 2nd row
-          lcd.print( "On " ); 
-          lcd.setCursor ( 13, 1 );            // go to the 2nd row
-          lcd.print( "Off" ); 
+          lcdsetCursor ( 3, 1 );            // go to the 2nd row
+          lcdprint( "On " ); 
+          lcdsetCursor ( 13, 1 );            // go to the 2nd row
+          lcdprint( "Off" ); 
         }
       }
     }
@@ -49,10 +49,10 @@ void relayControl()
         #endif
         RelayStatus = RELAY_COOL;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
-          lcd.setCursor ( 3, 1 );            // go to the 2nd row
-          lcd.print( "Off" ); 
-          lcd.setCursor ( 13, 1 );            // go to the 2nd row
-          lcd.print( "On " ); 
+          lcdsetCursor ( 3, 1 );            // go to the 2nd row
+          lcdprint( "Off" ); 
+          lcdsetCursor ( 13, 1 );            // go to the 2nd row
+          lcdprint( "On " ); 
         }
       }
     }
@@ -65,10 +65,10 @@ void relayControl()
         #endif
         RelayStatus = RELAY_NONE;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
-          lcd.setCursor ( 3, 1 );            // go to the 2nd row
-          lcd.print( "Off" ); 
-          lcd.setCursor ( 13, 1 );            // go to the 2nd row
-          lcd.print( "Off" ); 
+          lcdsetCursor ( 3, 1 );            // go to the 2nd row
+          lcdprint( "Off" ); 
+          lcdsetCursor ( 13, 1 );            // go to the 2nd row
+          lcdprint( "Off" ); 
         }
       }
     }

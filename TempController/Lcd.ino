@@ -1,4 +1,44 @@
 
+
+//LCD includes
+#include <Wire.h>
+#include <hd44780.h>
+#include <hd44780ioClass/hd44780_I2Cexp.h> // include i/o class header
+
+// LiquidCrystal Display
+hd44780_I2Cexp lcd; // declare lcd object: auto locate & config display for hd44780 chip
+
+void lcdsetCursor( int col, int row ){
+  lcd.setCursor ( col, row );
+}
+
+void lcdprint( String str ){
+  lcd.print( str );
+}
+
+void lcdprint( float flt ){
+  lcd.print( flt );
+}
+
+void lcdclear(){
+  lcd.clear();
+}
+
+void lcdsetBacklightHIGH(){
+  lcd.setBacklight( HIGH );  
+}
+
+void lcdsetBacklightLOW(){
+  lcd.setBacklight( LOW );  
+}
+
+void lcdnoCursor(){
+  lcd.noCursor();
+}
+
+void lcdcursor(){
+  lcd.cursor();
+}
 void changeDisplay(){
   currentDisplayMode = currentDisplayMode + 1;
   if( currentDisplayMode > DISPLAYMODE_MINMAX ){
