@@ -1,6 +1,8 @@
 # Brewery Temperature Controller
 Brewery Temperature Controller
 
+Refer to the Wiki for details: https://github.com/jslawinsk/BrewTempController/wiki
+
 #Arduino Shield Design
 
 ![Auduino Shield Diagram](https://github.com/jslawinsk/BrewTempController/blob/master/Documentation/BrewTemp%20Controller_bb.png)
