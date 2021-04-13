@@ -8,6 +8,13 @@
 // LiquidCrystal Display
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & config display for hd44780 chip
 
+const int LCD_TYPE_16x2 = 0;
+const int LCD_TYPE_20x4 = 1;
+
+int lcdType = LCD_TYPE_20x4;
+int rows;
+int columns;
+
 void lcdsetCursor( int col, int row ){
   lcd.setCursor ( col, row );
 }
@@ -49,7 +56,7 @@ void changeDisplay(){
 
 void setTempratureTemplate(){
     //setup LCD
-    lcd.begin(16,2);        // 20 columns by 4 rows on display    
+    lcd.begin(  columns, rows );        // 20 columns by 4 rows on display    
   
     lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
     lcd.clear();
@@ -99,15 +106,29 @@ void setTempratureTemplate(){
 }
 
 void displayLogo(){
-    lcd.begin(16,2);        // 20 columns by 4 rows on display    
+    if( lcdType = LCD_TYPE_20x4 ){
+      rows = 4;
+      columns = 20;
+    }
+    else{
+      rows = 2;
+      columns = 16;      
+    }
+    lcd.begin( columns, rows );        // 20 columns by 4 rows on display    
   
     lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
     lcd.clear();
     
     lcd.setCursor ( 0, 0 );            // go to the top left corner
-    lcd.print("BrewTemp Controll");   
-    lcd.setCursor ( 0, 1 );            // go to the 2nd row
-    lcd.print("Version Beata 1.0");   
+    if( lcdType = LCD_TYPE_20x4 ){
+      lcd.print("BrewTemp Controller");   
+      lcd.setCursor ( 0, 2 );            // go to the 2nd row
+    }
+    else{
+      lcd.print("BrewTemp Control");   
+      lcd.setCursor ( 0, 1 );            // go to the 2nd row
+    }
+    lcd.print("Version 1.0");   
 }
 
 void displayMessage( String message ){
