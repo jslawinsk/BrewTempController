@@ -49,6 +49,8 @@ unsigned long tempratureTimer;
 // Data wire is plugged into port 2 on the Arduino
 #define ONE_WIRE_BUS 9
 #define TEMPERATURE_PRECISION 9 // Lower resolution
+#define TEMPERATURE_MINIMUM 0
+#define TEMPERATURE_MAXIMUM 275
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
@@ -163,7 +165,7 @@ void loop(void)
 
 
 // function to print the temperature for a device
-void printTemperature(DeviceAddress deviceAddress)
+void printTemperature( )
 {
     if(screenMode == SCREENMODE_DISPLAYTEMP ){
       lcdsetCursor (5,0);         // go to col 16 of the last row
@@ -229,25 +231,28 @@ void temperatureInterface()
         //float tempC = sensors.getTempC(tempDeviceAddress);
         //currentTemprature = DallasTemperature::toFahrenheit(tempC);
         currentTemprature = sensors.getTempF(tempDeviceAddress);
-        if(currentTemprature >= max)
+        if( currentTemprature >= TEMPERATURE_MINIMUM && currentTemprature <= TEMPERATURE_MAXIMUM )
         {
-          max = currentTemprature;
-          if( currentDisplayMode == DISPLAYMODE_MINMAX ){
-            lcdsetCursor ( 11, 1 );            // go to the 2nd row
-            lcdprint( getDisplayTemperature( max ) ); // pad string with spaces for centering
+          if(currentTemprature >= max)
+          {
+            max = currentTemprature;
+            if( currentDisplayMode == DISPLAYMODE_MINMAX ){
+              lcdsetCursor ( 11, 1 );            // go to the 2nd row
+              lcdprint( getDisplayTemperature( max ) ); // pad string with spaces for centering
+            }
           }
-        }
-        if(currentTemprature <= min)
-        {
-          min = currentTemprature;
-          if( currentDisplayMode == DISPLAYMODE_MINMAX ){
-            lcdsetCursor ( 3, 1 );            // go to the 2nd row
-            lcdprint( getDisplayTemperature( min ) ); // pad string with spaces for centering
+          if(currentTemprature <= min)
+          {
+            min = currentTemprature;
+            if( currentDisplayMode == DISPLAYMODE_MINMAX ){
+              lcdsetCursor ( 3, 1 );            // go to the 2nd row
+              lcdprint( getDisplayTemperature( min ) ); // pad string with spaces for centering
+            }
           }
         }
     }
     // It responds almost immediately. Let's print out the data
-    printTemperature(tempDeviceAddress); // Use a simple function to print out the data
+    printTemperature( ); // Use a simple function to print out the data
    } 
     //else ghost device! Check your power requirements and cabling
   }
