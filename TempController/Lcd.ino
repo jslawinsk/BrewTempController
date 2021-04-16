@@ -136,7 +136,12 @@ void displayMessage( String message ){
     lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
     lcd.clear();
     
-    lcd.setCursor ( 0, 0 );            // go to the top left corner
+    if( lcdType = LCD_TYPE_20x4 ){
+      lcd.setCursor ( 0, 3 );            // go to the bottom left corner
+    }
+    else {
+      lcd.setCursor ( 0, 0 );            // go to the top left corner
+    }  
     lcd.print( message );   
     delay( 4000 );
     setTempratureTemplate();
