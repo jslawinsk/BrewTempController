@@ -1,11 +1,13 @@
 
 
-int rotPinA = 10;  // Connected to CLK on KY-040
-int rotPinB = 3;  // 11;  // Connected to DT on KY-040
-int rotButtonPin = 12; // Should be12
-int rotPinALast;  
-int rotAVal;
-int rotBVal;
+int pinA = 10;       // Connected to CLK on KY-040
+int pinAstateCurrent = LOW;                // Current state of Pin A
+int pinAStateLast = pinAstateCurrent;      // Last read value of Pin A
+
+int pinB = 3;        // Connected to DT on KY-040
+
+int switchPin = 12;     // Should be 12
+int switchState = HIGH; // button value
 
 int rotationValue = 0;
 
@@ -22,15 +24,16 @@ const int SETUP_ITEM_DONE = 5;
 int setupItem = SETUP_ITEM_TEMP;
 
 void rotarySetup(){
-  pinMode (rotPinA,INPUT);
-  pinMode (rotPinB,INPUT);
-  pinMode (rotButtonPin, INPUT);
+
+  pinMode ( switchPin, INPUT_PULLUP );
+  pinMode ( pinA, INPUT );
+  pinMode ( pinB, INPUT );
    /* Read Pin A
    Whatever state it's in will reflect the last position   
    */
-  attachInterrupt(digitalPinToInterrupt(rotPinB), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
+  attachInterrupt(digitalPinToInterrupt( pinB), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
  
-  rotPinALast = digitalRead(rotPinA);   
+  // pinAStateLast = digitalRead( pinA );   
 }
 
 void rotary() { 
@@ -38,9 +41,11 @@ void rotary() {
   //
   //  Handle Button Press
   //
-  if( !(digitalRead(rotButtonPin)) ){
+  switchState = digitalRead( switchPin );    // Read the digital value of the switch (LOW/HIGH)
+  // If the switch is pressed (LOW), button pressed
+  if( switchState == LOW ) {
     delay( 100 );
-    while( !(digitalRead(rotButtonPin)) );
+    while( !(digitalRead( switchPin )) );
     #ifdef DEBUG
       Serial.println( "Button Pressed" );
     #endif
@@ -106,37 +111,23 @@ void rotary() {
 
 
 void rotaryIsr(){
-  delay( 2 );
-  rotAVal = digitalRead(rotPinA);
-  if( rotAVal != rotPinALast ){ // Means the knob is rotating
-    rotBVal = digitalRead(rotPinB);
-    #ifdef DEBUG
-      Serial.print ("Rotated: Last: "  );
-      Serial.print( rotPinALast );
-      Serial.print (" A Value: "  );
-      Serial.print( rotAVal );
-      Serial.print (" B Value: "  );
-      Serial.print( rotBVal );
-    #endif     
-    // if the knob is rotating, we need to determine direction
-    // We do that by reading pin B.
-    if( rotPinALast != 0 ) {
-      if( rotAVal == 0 && rotBVal == 0 ) {  // Means pin A Changed first - We're Rotating Clockwise
-        rotationValue = 1;
-        #ifdef DEBUG        
-          Serial.println(" clockwise");        
-        #endif
-      } else {// Otherwise B changed first and we're moving CCW
-        rotationValue = -1;
-        #ifdef DEBUG        
-          Serial.println(" counterclockwise");
-        #endif
-      }
-    }
-    if( rotAVal != rotPinALast ){ // Means the knob is rotating
-      rotPinALast = rotAVal;
+  // delay( 2 );
+  pinAstateCurrent = digitalRead( pinA );
+  if ((pinAStateLast == LOW) && (pinAstateCurrent == HIGH)) {  
+
+    if (digitalRead( pinB ) == HIGH) {      // If Pin B is HIGH
+      rotationValue = 1;
+      #ifdef DEBUG
+      Serial.println("clockwise");             // Print on screen
+      #endif
+    } else {
+      rotationValue = -1;
+      #ifdef DEBUG
+      Serial.println("counterclockwise");            // Print on screen
+      #endif
     }
   }
+  pinAStateLast = pinAstateCurrent; // Store the latest read value in the currect state variable
 }
 
 

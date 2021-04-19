@@ -1,3 +1,4 @@
+#ifdef BLUETOOTH_ENABLED  
 
 #include <SoftwareSerial.h> 
 
@@ -138,3 +139,5 @@ int readline(int readch, char *buffer, int len)
   // No end of line has been found, so return -1.
   return -1;
 }
+
+#endif

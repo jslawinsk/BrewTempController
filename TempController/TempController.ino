@@ -4,6 +4,7 @@
 #include <DallasTemperature.h>
 
 // #define DEBUG 1
+#define BLUETOOTH_ENABLED 1
 
 float currentTemprature;  // Current Temprature store in farenheight
 
@@ -140,7 +141,10 @@ void setup(void)
   digitalWrite(RelayCool, HIGH); //Turn off relay 
   RelayStatus = RELAY_NONE;
 
+  #ifdef BLUETOOTH_ENABLED  
   bluetoothSetup();
+  #endif
+  
   relaySetup();
   
   screenTime = millis();
@@ -157,7 +161,9 @@ void loop(void)
   if(screenMode != SCREENMODE_SETUP ){
     temperatureInterface();
     relayControl();
-    bluetoothInterface();
+    #ifdef BLUETOOTH_ENABLED
+      bluetoothInterface();
+    #endif
   }
   rotary();
 }
