@@ -1,8 +1,18 @@
 
 
-int rotPinA = 10;  // Connected to CLK on KY-040
-int rotPinB = 3;  // Connected to DT on KY-040
-int rotButtonPin = 12;
+#define D1_MINI 1
+
+#ifdef D1_MINI
+  int rotPinB = D0;        // Connected to DT on KY-040
+  int rotPinA = D5;       // Connected to CLK on KY-040
+  int rotButtonPin = D3;     // Should be 12
+#else
+  int rotPinB = 3;        // Connected to DT on KY-040
+  int rotPinA = 10;       // Connected to CLK on KY-040
+  int rotButtonPin = 12;     // Should be 12
+#endif
+
+
 int rotPinALast;  
 int rotAVal;
 int rotBVal;
@@ -26,8 +36,6 @@ void setup(void)
    /* Read Pin A
    Whatever state it's in will reflect the last position   
    */
- //  attachInterrupt(digitalPinToInterrupt(rotPinA), isr, FALLING);   // interrupt 0 is always connected to pin 2 on Arduino UNO
- 
    rotPinALast = digitalRead(rotPinA);   
    Serial.begin (9600);
 

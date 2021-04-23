@@ -4,12 +4,26 @@
 #include <DallasTemperature.h>
 
 // #define DEBUG 1
-#define BLUETOOTH_ENABLED 1
+//
+// The following are defined for components which are installed
+//
+// #define BLUETOOTH_ENABLED 1
+#define ROTARY_ENABLED 1
+#define RELAY_ENABLED 1
+//
+// Define the following if using a Lolin D1 Mini
+//
+#define D1_MINI 1
 
 float currentTemprature;  // Current Temprature store in farenheight
 
-int RelayHeat = 6;
-int RelayCool = 7;
+#ifdef D1_MINI
+  int RelayHeat = D7;
+  int RelayCool = D8;
+#else
+  int RelayHeat = 6;
+  int RelayCool = 7;
+#endif
 
 const int RELAY_NONE = 0;
 const int RELAY_HEAT = 1;
@@ -48,7 +62,12 @@ unsigned long tempratureTimer;
 //temp sensor defines
 
 // Data wire is plugged into port 2 on the Arduino
-#define ONE_WIRE_BUS 9
+
+#ifdef D1_MINI
+  #define ONE_WIRE_BUS D4
+#else
+  #define ONE_WIRE_BUS 9
+#endif
 #define TEMPERATURE_PRECISION 9 // Lower resolution
 #define TEMPERATURE_MINIMUM 0
 #define TEMPERATURE_MAXIMUM 275
@@ -61,8 +80,8 @@ DallasTemperature sensors(&oneWire);
 
 int numberOfDevices; // Number of temperature devices found
 
-float min = 1024;
-float max = -100;
+float _minTemp = 1024.0;
+float _maxTemp = -100.0;
 
 DeviceAddress tempDeviceAddress; // We'll use this variable to store a found device address
 
@@ -73,7 +92,7 @@ void setup(void)
   //setup temp sensor
   // start serial port
   Serial.begin(9600);
-  Serial.println("Dallas Temperature IC Control Library Demo.");
+  Serial.println("Dallas Temperature IC Control Setup");
 
   // Start up the library
   sensors.begin();
@@ -125,20 +144,24 @@ void setup(void)
   }
 
   Serial.begin(9600);
+  #ifdef ROTARY_ENABLED
   Serial.println();
   Serial.print( "Setting up Rotary Encoder" );
   //rotary encoder setup
 
   rotarySetup();
+  #endif
   Serial.begin (9600);
 
   //
   //  Releay Switch Setup
   //
+  #ifdef RELAY_ENABLED
   pinMode(RelayHeat, OUTPUT); //Set Pin12 as output 
   pinMode(RelayCool, OUTPUT); //Set Pin12 as output 
   digitalWrite(RelayHeat, HIGH); //Turn off relay 
   digitalWrite(RelayCool, HIGH); //Turn off relay 
+  #endif
   RelayStatus = RELAY_NONE;
 
   #ifdef BLUETOOTH_ENABLED  
@@ -165,7 +188,9 @@ void loop(void)
       bluetoothInterface();
     #endif
   }
+  #ifdef ROTARY_ENABLED
   rotary();
+  #endif
 }
 
 
@@ -239,20 +264,20 @@ void temperatureInterface()
         currentTemprature = sensors.getTempF(tempDeviceAddress);
         if( currentTemprature >= TEMPERATURE_MINIMUM && currentTemprature <= TEMPERATURE_MAXIMUM )
         {
-          if(currentTemprature >= max)
+          if(currentTemprature >= _maxTemp)
           {
-            max = currentTemprature;
+            _maxTemp = currentTemprature;
             if( currentDisplayMode == DISPLAYMODE_MINMAX ){
               lcdsetCursor ( 11, 1 );            // go to the 2nd row
-              lcdprint( getDisplayTemperature( max ) ); // pad string with spaces for centering
+              lcdprint( getDisplayTemperature( _maxTemp ) ); // pad string with spaces for centering
             }
           }
-          if(currentTemprature <= min)
+          if(currentTemprature <= _minTemp)
           {
-            min = currentTemprature;
+            _minTemp = currentTemprature;
             if( currentDisplayMode == DISPLAYMODE_MINMAX ){
               lcdsetCursor ( 3, 1 );            // go to the 2nd row
-              lcdprint( getDisplayTemperature( min ) ); // pad string with spaces for centering
+              lcdprint( getDisplayTemperature( _minTemp ) ); // pad string with spaces for centering
             }
           }
         }

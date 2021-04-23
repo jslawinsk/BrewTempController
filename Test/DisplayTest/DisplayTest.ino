@@ -7,8 +7,24 @@
 
 hd44780_I2Cexp lcd; // declare lcd object: auto locate & config display for hd44780 chip
 
+const int LCD_TYPE_16x2 = 0;
+const int LCD_TYPE_20x4 = 1;
+
+int lcdType = LCD_TYPE_20x4;
+int rows;
+int columns;
+
 void setup() {
-  lcd.begin(16, 2);
+
+    if( lcdType = LCD_TYPE_20x4 ){
+      rows = 4;
+      columns = 20;
+    }
+    else{
+      rows = 2;
+      columns = 16;      
+    }
+  lcd.begin( columns, rows );        // 20 columns by 4 rows on display   
   lcd.backlight();
   lcd.setCursor(3,0);
   lcd.print("hello, world!");
@@ -29,7 +45,7 @@ void loop() {
 }
 
 void displayLogo(){
-    lcd.begin(16,2);        // 20 columns by 4 rows on display    
+    lcd.begin( columns, rows );        // 20 columns by 4 rows on display    
 
     lcd.setBacklight(HIGH); // Turn on backlight, LOW for off
     lcd.clear();

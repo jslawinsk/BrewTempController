@@ -25,14 +25,25 @@
  * CLK --> 4   blue (clock)
  *
  */
+//
+// Define the following if using a Lolin D1 Mini
+//
+#define D1_MINI 1
 
-int switchPin = 12;                        // button pin
+#ifdef D1_MINI
+  int pinB = D0;        // Connected to DT on KY-040
+  int pinA = D5;       // Connected to CLK on KY-040
+  int switchPin = D3;     // Should be 12
+#else
+  int pinB = 3;        // Connected to DT on KY-040
+  int pinA = 10;       // Connected to CLK on KY-040
+  int switchPin = 12;     // Should be 12
+#endif
+
 int switchState = HIGH;                    // button value
-
-int pinA = 10;                              // Rotary encoder Pin A
-int pinB = 3;                              // Rotary encoder Pin B
 int pinAstateCurrent = LOW;                // Current state of Pin A
 int pinAStateLast = pinAstateCurrent;      // Last read value of Pin A
+
 
 void setup() {
   Serial.begin (9600);                     // Initialise the serial monitor
@@ -43,41 +54,46 @@ void setup() {
   pinMode (pinB, INPUT);                   // Set PinB as input
 
   // Atach a CHANGE interrupt to PinB and exectute the update function when this change occurs.
-  attachInterrupt(digitalPinToInterrupt(pinB), update, CHANGE);
-  
+ attachInterrupt(digitalPinToInterrupt(pinA), rotaryIsr, CHANGE);
+ attachInterrupt(digitalPinToInterrupt(switchPin), buttonIsr, CHANGE);
+
 }
 
-void loop() {
+void loop() {    
+}
 
+#ifdef D1_MINI
+ICACHE_RAM_ATTR void buttonIsr() {
+#else
+void buttonIsr() {
+#endif
   // BUTTON
   switchState = digitalRead(switchPin);    // Read the digital value of the switch (LOW/HIGH)
-
   // If the switch is pressed (LOW), print message
   if (switchState == LOW) {
       Serial.println("Switch pressed");
   }
-    
 }
 
-void update() {
-
+#ifdef D1_MINI
+ICACHE_RAM_ATTR void rotaryIsr() {
+#else
+void rotaryIsr() {
+#endif
   /* WARNING: For this example I've used Serial.println within the interrupt callback. The Serial 
    * library already uses interrupts which could cause errors. Therefore do not use functions 
    * of the Serial libray in your interrupt callback.
    */
-
   // ROTATION DIRECTION
   pinAstateCurrent = digitalRead(pinA);    // Read the current state of Pin A
   
   // If there is a minimal movement of 1 step
   if ((pinAStateLast == LOW) && (pinAstateCurrent == HIGH)) {
-    
     if (digitalRead(pinB) == HIGH) {      // If Pin B is HIGH
-      Serial.println("Right");             // Print on screen
+      Serial.println("Counter Clockwise");             // Print on screen
     } else {
-      Serial.println("Left");            // Print on screen
+      Serial.println("Clockwise");            // Print on screen
     }
-    
   }
   
   pinAStateLast = pinAstateCurrent;        // Store the latest read value in the currect state variable

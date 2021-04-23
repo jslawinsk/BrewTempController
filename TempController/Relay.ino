@@ -25,8 +25,10 @@ void relayControl()
       //  Too Cold
       //  Turn On Heat, Turn OffCool
       //
+      #ifdef RELAY_ENABLED
       digitalWrite(RelayHeat, LOW); //Turn on relay
       digitalWrite(RelayCool, HIGH); //Turn off relay
+      #endif
       if ( RelayStatus != RELAY_HEAT ) {
         #ifdef DEBUG
           Serial.println( "Heat On" );
@@ -41,8 +43,10 @@ void relayControl()
       }
     }
     else if ( curRepTemp - deviation > TargetRepTemp || controlMode == CONTROL_COOL ) {
+      #ifdef RELAY_ENABLED
       digitalWrite(RelayHeat, HIGH); //Turn off relay
       digitalWrite(RelayCool, LOW); //Turn on relay
+      #endif
       if ( RelayStatus != RELAY_COOL ) {
         #ifdef DEBUG
           Serial.println( "Cooling On" );
@@ -57,8 +61,10 @@ void relayControl()
       }
     }
     else {
+      #ifdef RELAY_ENABLED
       digitalWrite(RelayHeat, HIGH); //Turn off relay
       digitalWrite(RelayCool, HIGH); //Turn off relay
+      #endif
       if ( RelayStatus != RELAY_NONE ) {
         #ifdef DEBUG
           Serial.println( "Heat and cooling off" );

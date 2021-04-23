@@ -95,12 +95,12 @@ void setTempratureTemplate(){
         lcd.setCursor ( 0, 1 );            // go to the 2nd row
         lcd.print("Mn "); // pad string with spaces for centering
         lcd.setCursor ( 3, 1 );            // go to the 2nd row
-        lcd.print( getDisplayTemperature( min ) ); // pad string with spaces for centering
+        lcd.print( getDisplayTemperature( _minTemp ) ); // pad string with spaces for centering
       
         lcd.setCursor ( 8, 1 );            // go to the 3rd row
         lcd.print("Mx "); // pad string with spaces for centering
         lcd.setCursor ( 11, 1 );            // go to the 2nd row
-        lcd.print( getDisplayTemperature( max ) ); // pad string with spaces for centering
+        lcd.print( getDisplayTemperature( _maxTemp ) ); // pad string with spaces for centering
         break;
     }
 }

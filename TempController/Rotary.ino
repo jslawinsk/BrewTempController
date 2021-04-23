@@ -1,12 +1,18 @@
 
 
-int pinA = 10;       // Connected to CLK on KY-040
 int pinAstateCurrent = LOW;                // Current state of Pin A
 int pinAStateLast = pinAstateCurrent;      // Last read value of Pin A
 
-int pinB = 3;        // Connected to DT on KY-040
+#ifdef D1_MINI
+  int pinB = D0;        // Connected to DT on KY-040
+  int pinA = D5;        // Connected to CLK on KY-040
+  int switchPin = D3;   // Connected to SW on KY-040
+#else
+  int pinB = 3;        // Connected to DT on KY-040
+  int pinA = 10;       // Connected to CLK on KY-040
+  int switchPin = 12;  // Connected to SW on KY-040
+#endif
 
-int switchPin = 12;     // Should be 12
 int switchState = HIGH; // button value
 
 int rotationValue = 0;
@@ -31,13 +37,11 @@ void rotarySetup(){
    /* Read Pin A
    Whatever state it's in will reflect the last position   
    */
-  attachInterrupt(digitalPinToInterrupt( pinB), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
- 
+  attachInterrupt(digitalPinToInterrupt( pinA), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
   // pinAStateLast = digitalRead( pinA );   
 }
 
-void rotary() { 
-
+void rotary(){
   //
   //  Handle Button Press
   //
@@ -110,20 +114,24 @@ void rotary() {
 }
 
 
+#ifdef D1_MINI
+ICACHE_RAM_ATTR void rotaryIsr(){
+#else
 void rotaryIsr(){
+#endif
   // delay( 2 );
   pinAstateCurrent = digitalRead( pinA );
   if ((pinAStateLast == LOW) && (pinAstateCurrent == HIGH)) {  
 
     if (digitalRead( pinB ) == HIGH) {      // If Pin B is HIGH
-      rotationValue = 1;
-      #ifdef DEBUG
-      Serial.println("clockwise");             // Print on screen
-      #endif
-    } else {
       rotationValue = -1;
       #ifdef DEBUG
-      Serial.println("counterclockwise");            // Print on screen
+      Serial.println("counterclockwise");             // Print on screen
+      #endif
+    } else {
+      rotationValue = 1;
+      #ifdef DEBUG
+      Serial.println("clockwise");            // Print on screen
       #endif
     }
   }
