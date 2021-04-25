@@ -6,7 +6,7 @@ int pinAStateLast = pinAstateCurrent;      // Last read value of Pin A
 #ifdef D1_MINI
   int pinB = D0;        // Connected to DT on KY-040
   int pinA = D5;        // Connected to CLK on KY-040
-  int switchPin = D3;   // Connected to SW on KY-040
+  int switchPin = D6;   // Connected to SW on KY-040
 #else
   int pinB = 3;        // Connected to DT on KY-040
   int pinA = 10;       // Connected to CLK on KY-040
