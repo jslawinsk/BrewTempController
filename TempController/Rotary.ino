@@ -37,8 +37,12 @@ void rotarySetup(){
    /* Read Pin A
    Whatever state it's in will reflect the last position   
    */
+#ifdef D1_MINI
   attachInterrupt(digitalPinToInterrupt( pinA), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
-  // pinAStateLast = digitalRead( pinA );   
+#else
+  attachInterrupt(digitalPinToInterrupt( pinB), rotaryIsr, CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
+  pinAStateLast = digitalRead( pinA );   
+#endif
 }
 
 void rotary(){
@@ -124,12 +128,20 @@ void rotaryIsr(){
   if ((pinAStateLast == LOW) && (pinAstateCurrent == HIGH)) {  
 
     if (digitalRead( pinB ) == HIGH) {      // If Pin B is HIGH
-      rotationValue = -1;
+      #ifdef D1_MINI
+        rotationValue = -1;
+      #else
+        rotationValue = 1;
+      #endif
       #ifdef DEBUG
       Serial.println("counterclockwise");             // Print on screen
       #endif
     } else {
-      rotationValue = 1;
+      #ifdef D1_MINI
+        rotationValue = 1;
+      #else
+        rotationValue = -1;
+      #endif
       #ifdef DEBUG
       Serial.println("clockwise");            // Print on screen
       #endif

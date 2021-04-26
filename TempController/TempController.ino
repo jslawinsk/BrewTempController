@@ -221,8 +221,9 @@ String getDisplayTemperature( float tempF ){
       strTemp = String(tempF);
     }
     else{
-      float tempF = DallasTemperature::toCelsius( tempF );
-      strTemp = String(tempF);
+      // float tempF = DallasTemperature::toCelsius( tempF );
+      float tempC = ( tempF - 32 ) * 0.5556;;
+      strTemp = String( tempC );
     }
     strTemp = strTemp.substring( 0, 4 );
     return strTemp;
@@ -232,8 +233,8 @@ float getDisplayTemperatureNum( float tempF ){
     float nTemp = tempF;
     if(unit == UNIT_CELSIUS)
     {
-      nTemp = DallasTemperature::toCelsius(tempF);
-      //nTemp = DallasTemperature::toFahrenheit(tempC);
+      // nTemp = DallasTemperature::toCelsius(tempF);
+      nTemp = (tempF-32) * 0.5556;
     }
     return nTemp;
 }

@@ -11,7 +11,7 @@ hd44780_I2Cexp lcd; // declare lcd object: auto locate & config display for hd44
 const int LCD_TYPE_16x2 = 0;
 const int LCD_TYPE_20x4 = 1;
 
-int lcdType = LCD_TYPE_20x4;
+int lcdType = LCD_TYPE_16x2;
 int rows;
 int columns;
 
