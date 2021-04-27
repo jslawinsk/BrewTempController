@@ -219,13 +219,18 @@ String getDisplayTemperature( float tempF ){
     if(unit == UNIT_FARENHEIGHT)
     {
       strTemp = String(tempF);
+      strTemp = strTemp.substring( 0, 4 );
+      strTemp = strTemp + " \xDF";
+      strTemp = strTemp + "F";
     }
     else{
       // float tempF = DallasTemperature::toCelsius( tempF );
       float tempC = ( tempF - 32 ) * 0.5556;;
       strTemp = String( tempC );
+      strTemp = strTemp.substring( 0, 4 );
+      strTemp = strTemp + " \xDF";
+      strTemp = strTemp + "C";
     }
-    strTemp = strTemp.substring( 0, 4 );
     return strTemp;
 }
 
