@@ -7,13 +7,13 @@
 //
 // The following are defined for components which are installed
 //
-//#define BLUETOOTH_ENABLED 1
+#define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
 //
 // Define the following if using a Lolin D1 Mini
 //
-#define D1_MINI 1
+// #define D1_MINI 1
 
 float currentTemprature;  // Current Temprature store in farenheight
 
