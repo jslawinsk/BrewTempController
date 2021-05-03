@@ -7,13 +7,13 @@
 //
 // The following are defined for components which are installed
 //
-#define BLUETOOTH_ENABLED 1
+//#define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
 //
 // Define the following if using a Lolin D1 Mini
 //
-// #define D1_MINI 1
+#define D1_MINI 1
 
 float currentTemprature;  // Current Temprature store in farenheight
 
@@ -234,6 +234,22 @@ String getDisplayTemperature( float tempF ){
     return strTemp;
 }
 
+String getDisplayTemperatureBasic( float tempF ){
+    String strTemp = "";
+    if(unit == UNIT_FARENHEIGHT)
+    {
+      strTemp = String(tempF);
+    }
+    else{
+      // float tempF = DallasTemperature::toCelsius( tempF );
+      float tempC = ( tempF - 32 ) * 0.5556;;
+      strTemp = String( tempC );
+    }
+    strTemp = strTemp.substring( 0, 4 );
+    return strTemp;
+}
+
+
 float getDisplayTemperatureNum( float tempF ){
     float nTemp = tempF;
     if(unit == UNIT_CELSIUS)
@@ -275,7 +291,7 @@ void temperatureInterface()
             _maxTemp = currentTemprature;
             if( currentDisplayMode == DISPLAYMODE_MINMAX ){
               lcdsetCursor ( 11, 1 );            // go to the 2nd row
-              lcdprint( getDisplayTemperature( _maxTemp ) ); // pad string with spaces for centering
+              lcdprint( getDisplayTemperatureBasic( _maxTemp ) ); // pad string with spaces for centering
             }
           }
           if(currentTemprature <= _minTemp)
@@ -283,7 +299,7 @@ void temperatureInterface()
             _minTemp = currentTemprature;
             if( currentDisplayMode == DISPLAYMODE_MINMAX ){
               lcdsetCursor ( 3, 1 );            // go to the 2nd row
-              lcdprint( getDisplayTemperature( _minTemp ) ); // pad string with spaces for centering
+              lcdprint( getDisplayTemperatureBasic( _minTemp ) ); // pad string with spaces for centering
             }
           }
         }
