@@ -10,6 +10,7 @@
 #define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
+// #define WIFI_ENABLED 1
 //
 // Define the following if using a Lolin D1 Mini
 //
@@ -169,6 +170,10 @@ void setup(void)
   #endif
   
   relaySetup();
+
+  #ifdef WIFI_ENABLED
+  wifiSetup();
+  #endif
   
   screenTime = millis();
   tempratureTimer = millis();
@@ -191,6 +196,11 @@ void loop(void)
   #ifdef ROTARY_ENABLED
   rotary();
   #endif
+
+  #ifdef WIFI_ENABLED
+  wifiLoop();
+  #endif
+
 }
 
 
