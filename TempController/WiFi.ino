@@ -3,18 +3,21 @@
 #include <ESP8266WebServer.h>
 
 //
-//  Update The follwoing lines to specify your WiFi credentials
+//  TODO: Update The follwoing lines to specify your WiFi credentials
 //
 const char* ssid = "<Update SSID var here>";
 const char* password = "<update NW Password here>";
 //
-//  Update the following to specify you desired IP
+//  TODO: Update the following to specify you desired IP
 //
 IPAddress ip( 10, 0, 0, 22 );
 //
-//  Update the following to specify you network gateway IP
+//  TODO: Update the following to specify you network gateway IP
 //
 IPAddress gateway( 10, 0, 0, 1 );
+
+const char* www_username = "admin";
+const char* www_password = "admin";
 
 ESP8266WebServer server(80);
 
@@ -61,6 +64,10 @@ void wifiSetup() {
     server.send(200, "text/html", page);
   });
   server.on("/tempdata", [](){
+
+    if (!server.authenticate(www_username, www_password)) {
+      return server.requestAuthentication();
+    }
     String cool = "OFF";
     String heat = "OFF";
     String control = "Auto";
@@ -87,6 +94,9 @@ void wifiSetup() {
     delay(1000);
   });
   server.on("/tempjson", [](){
+    if (!server.authenticate(www_username, www_password)) {
+      return server.requestAuthentication();
+    }
     String cool = "OFF";
     String heat = "OFF";
     String control = "Auto";

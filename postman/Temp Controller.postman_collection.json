@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "0cc8fc0a-ba87-4bc4-b624-bce860458ed2",
+		"name": "Temp Controller",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://10.0.0.22/tempdata",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic: YWRtaW46YWRtaW4=",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://10.0.0.22/tempdata",
+					"protocol": "http",
+					"host": [
+						"10",
+						"0",
+						"0",
+						"22"
+					],
+					"path": [
+						"tempdata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://10.0.0.22/tempjson",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic: YWRtaW46YWRtaW4=",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://10.0.0.22/tempjson",
+					"protocol": "http",
+					"host": [
+						"10",
+						"0",
+						"0",
+						"22"
+					],
+					"path": [
+						"tempjson"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

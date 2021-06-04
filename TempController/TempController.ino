@@ -7,12 +7,12 @@
 //
 // The following are defined for components which are installed
 //
-#define BLUETOOTH_ENABLED 1
+// #define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
 // #define WIFI_ENABLED 1
 //
-// Define the following if using a Lolin D1 Mini
+// Define the following if using a Lolin D1 Mini comment the folloing line for Arduino
 //
 // #define D1_MINI 1
 
