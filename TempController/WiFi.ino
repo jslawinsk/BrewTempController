@@ -15,7 +15,9 @@ IPAddress ip( 10, 0, 0, 22 );
 //  TODO: Update the following to specify you network gateway IP
 //
 IPAddress gateway( 10, 0, 0, 1 );
-
+//
+//  TODO: Web login user names change accordingly
+//
 const char* www_username = "admin";
 const char* www_password = "admin";
 

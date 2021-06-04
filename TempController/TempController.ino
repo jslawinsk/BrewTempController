@@ -12,7 +12,7 @@
 #define RELAY_ENABLED 1
 // #define WIFI_ENABLED 1
 //
-// Define the following if using a Lolin D1 Mini comment the folloing line for Arduino
+// Define the following if using a Lolin D1 Mini, comment the following line for Arduino
 //
 // #define D1_MINI 1
 
