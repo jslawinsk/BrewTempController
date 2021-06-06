@@ -52,6 +52,7 @@ void bluetoothInterface()
             Serial.println( "Target: " + strTarget );
           #endif
           targetTemp = strTarget.toFloat();
+          controlCommandReceived = true;
           if( currentDisplayMode == DISPLAYMODE_TARGET ){
             setTempratureTemplate();
           }

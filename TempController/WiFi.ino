@@ -1,3 +1,5 @@
+#ifdef WIFI_ENABLED
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -22,6 +24,10 @@ const char* www_username = "admin";
 const char* www_password = "admin";
 
 ESP8266WebServer server(80);
+
+const int RESPONSE_HTML = 0;
+const int RESPONSE_JSON = 1;
+
 
 void wifiSetup() {
 //  Serial.begin(115200);
@@ -61,75 +67,104 @@ void wifiSetup() {
   Serial.println("/");
 
   server.on("/", [](){
-    String page = "<h1>Temperature Sensor Data</h1><p>";
-    page = page +"<a href=\"tempdata\"><button>Temperature Data</button></a>&nbsp;<a href=\"tempjson\"><button>Temperature JSON</button></a></p>";
-    server.send(200, "text/html", page);
+    sendResponsePage( "", RESPONSE_HTML );
   });
   server.on("/tempdata", [](){
 
     if (!server.authenticate(www_username, www_password)) {
       return server.requestAuthentication();
     }
-    String cool = "OFF";
-    String heat = "OFF";
-    String control = "Auto";
-    if( RelayStatus == RELAY_HEAT ){
-      heat = "ON";
-    }
-    else if( RelayStatus == RELAY_COOL ){
-      cool = "ON";
-    }
-    if( controlMode == CONTROL_HEAT ){
-      control = "Heat";
-    }
-    else if( controlMode == CONTROL_COOL ){
-      control = "Cool";
-    }
-    String page = "<h1>Temperature Sensor Data</h1><p>";
-    page = page + "Temperature: " + getDisplayTemperature( currentTemprature ) + "<br>";  
-    page = page + "Target: " + getDisplayTemperature( targetTemp ) + "<br>";
-    page = page + "Heat: " + heat + "<br>";
-    page = page + "Cool: " + cool + "<br>";
-    page = page + "Control: " + control + "<br>";
-    page = page +"<a href=\"tempdata\"><button>Temperature Data</button></a>&nbsp;<a href=\"tempjson\"><button>Temperature JSON</button></a></p>";
-    server.send(200, "text/html", page);
-    delay(1000);
-  });
-  server.on("/tempjson", [](){
-    if (!server.authenticate(www_username, www_password)) {
-      return server.requestAuthentication();
-    }
-    String cool = "OFF";
-    String heat = "OFF";
-    String control = "Auto";
-    if( RelayStatus == RELAY_HEAT ){
-      heat = "ON";
-    }
-    else if( RelayStatus == RELAY_COOL ){
-      cool = "ON";
-    }
-    if( controlMode == CONTROL_HEAT ){
-      control = "Heat";
-    }
-    else if( controlMode == CONTROL_COOL ){
-      control = "Cool";
-    }    
 
-    String page = "{\"temperature\":" + String( currentTemprature );
-      page = page + ", \"target\":" + targetTemp;
-      page = page + ", \"heat\":\"" + heat + "\"";
-      page = page + ", \"cool\":\"" + cool + "\"";
-      page = page + ", \"control\":\"" + control + "\"";
-      page = page + "}";
-    server.send(200, "application/json", page);
-    delay(1000); 
+    String querycommand = getQueryParam( "command", "none" );
+    if( querycommand == "contolcool" ){
+        controlMode = CONTROL_COOL;
+        controlCommandReceived = true;
+    }
+    else if( querycommand == "contolheat" ){
+        controlMode = CONTROL_HEAT;
+        controlCommandReceived = true;
+    }
+    else if( querycommand == "contolauto" ){
+        controlMode = CONTROL_AUTO;
+        controlCommandReceived = true;
+    }
+    else if( querycommand == "settarget" ){
+        String strTarget = getQueryParam( "target", "" );
+        #ifdef DEBUG
+          Serial.println( "Target: " + strTarget );
+        #endif
+        if( strTarget != "" ){
+          targetTemp = strTarget.toFloat();
+          controlCommandReceived = true;
+          if( currentDisplayMode == DISPLAYMODE_TARGET ){
+            setTempratureTemplate();
+          }     
+        }   
+    }
+    int responseType = RESPONSE_HTML;
+    String respType = getQueryParam( "responseFormat", "HTML" );
+    if( respType == "JSON" ){
+      responseType = RESPONSE_JSON;
+    }
+
+    sendResponsePage( querycommand, responseType );
+    delay(1000);
   });
   server.begin();
   Serial.println("Web server started!"); 
 }
  
 void wifiLoop() {
-
   server.handleClient();
-
 }
+
+
+String getQueryParam( String param, String defaultValue )  { 
+
+  String value = defaultValue;
+
+  if( server.arg( param ) != ""){ 
+    value = server.arg( param );     //Gets the value of the query parameter
+  }
+  return value;
+}
+
+void sendResponsePage( String qCommand, int responseType ) {
+    String cool = "OFF";
+    String heat = "OFF";
+    String control = "Auto";
+    if( RelayStatus == RELAY_HEAT ){
+      heat = "ON";
+    }
+    else if( RelayStatus == RELAY_COOL ){
+      cool = "ON";
+    }
+    if( controlMode == CONTROL_HEAT ){
+      control = "Heat";
+    }
+    else if( controlMode == CONTROL_COOL ){
+      control = "Cool";
+    }
+
+    if( responseType == RESPONSE_JSON ){
+      String page = "{\"temperature\":" + String( currentTemprature );
+      page = page + ", \"target\":" + targetTemp;
+      page = page + ", \"heat\":\"" + heat + "\"";
+      page = page + ", \"cool\":\"" + cool + "\"";
+      page = page + ", \"control\":\"" + control + "\"";
+      page = page + "}";
+      server.send(200, "application/json", page);
+    }
+    else{
+      String page = "<h1>Temperature Sensor Data</h1><p>";
+      page = page + "Temperature: " + getDisplayTemperatureBasic( currentTemprature ) + "<br>";  
+      page = page + "Target: " + getDisplayTemperatureBasic( targetTemp ) + "<br>";
+      page = page + "Heat: " + heat + "<br>";
+      page = page + "Cool: " + cool + "<br>";
+      page = page + "Control: " + control + "<br>";
+      page = page + "Command: " + qCommand + "<br>";
+      page = page +"<a href=\"tempdata\"><button>Temperature Data</button></a>&nbsp;<a href=\"tempdata?responseFormat=JSON\"><button>Temperature JSON</button></a></p>";
+      server.send(200, "text/html", page);
+    }
+}
+#endif

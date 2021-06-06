@@ -7,7 +7,7 @@
 //
 // The following are defined for components which are installed
 //
-// #define BLUETOOTH_ENABLED 1
+#define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
 // #define WIFI_ENABLED 1
