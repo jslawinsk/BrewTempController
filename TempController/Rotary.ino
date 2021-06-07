@@ -26,7 +26,8 @@ const int SETUP_ITEM_TEMP = 1;
 const int SETUP_ITEM_UNIT = 2;
 const int SETUP_ITEM_DEVIATION = 3;
 const int SETUP_ITEM_CONTROL = 4;
-const int SETUP_ITEM_DONE = 5;
+const int SETUP_ITEM_CALIBRATION = 5;
+const int SETUP_ITEM_DONE = 6;
 int setupItem = SETUP_ITEM_TEMP;
 
 void rotarySetup(){
@@ -260,6 +261,23 @@ void setSettings( )
           lcdprint("Cool");
       }
       break;
+    case SETUP_ITEM_CALIBRATION:
+      if( editMode != EDIT_ACTIVE ){
+        lcdclear();
+        lcdsetCursor ( 0, 0 );            
+        lcdprint("Calibration");            
+      }
+      else{
+        if ( rotationValue == 1 ){
+          calibration += 0.1;
+        }
+        else if( rotationValue == -1 ){
+          calibration -= 0.1;
+        }
+     }
+     lcdsetCursor ( 0, 1 );
+     lcdprint( calibration );          
+     break;
     case SETUP_ITEM_DONE:
       if( editMode != EDIT_ACTIVE ){
         lcdclear();

@@ -10,11 +10,11 @@
 const char* ssid = "<Update SSID var here>";
 const char* password = "<update NW Password here>";
 //
-//  TODO: Update the following to specify you desired IP
+//  TODO: Update the following to specify your desired IP
 //
 IPAddress ip( 10, 0, 0, 22 );
 //
-//  TODO: Update the following to specify you network gateway IP
+//  TODO: Update the following to specify your network gateway IP
 //
 IPAddress gateway( 10, 0, 0, 1 );
 //
