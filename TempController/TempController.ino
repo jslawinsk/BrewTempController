@@ -7,14 +7,15 @@
 //
 // The following are defined for components which are installed
 //
-#define BLUETOOTH_ENABLED 1
+// #define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
-// #define WIFI_ENABLED 1
+#define WIFI_ENABLED 1
+#define LCD_20X4 1    // Comment this line if using 16 x 2 LCD
 //
 // Define the following if using a Lolin D1 Mini, comment the following line for Arduino
 //
-// #define D1_MINI 1
+#define D1_MINI 1
 
 float currentTemprature;  // Current Temprature store in farenheight
 
@@ -57,6 +58,7 @@ const int UNIT_CELSIUS = 2;
 int unit =  UNIT_FARENHEIGHT;
 
 float deviation = 1.0;
+float calibration= 0.0;
 int targetTemp = 70;
 unsigned long tempratureTimer;
 
@@ -209,7 +211,11 @@ void loop(void)
 void printTemperature( )
 {
     if(screenMode == SCREENMODE_DISPLAYTEMP ){
-      lcdsetCursor (5,0);         // go to col 16 of the last row
+      #ifdef LCD_20X4
+        lcdsetCursor( 13, 0 );         
+      #else
+        lcdsetCursor( 5, 0 );
+      #endif
       lcdprint( getDisplayTemperature( currentTemprature ) );           // update the display with a new number
   
       //
@@ -294,23 +300,46 @@ void temperatureInterface()
         //float tempC = sensors.getTempC(tempDeviceAddress);
         //currentTemprature = DallasTemperature::toFahrenheit(tempC);
         currentTemprature = sensors.getTempF(tempDeviceAddress);
+        currentTemprature = currentTemprature + calibration;
         if( currentTemprature >= TEMPERATURE_MINIMUM && currentTemprature <= TEMPERATURE_MAXIMUM )
         {
           if(currentTemprature >= _maxTemp)
           {
             _maxTemp = currentTemprature;
             if( currentDisplayMode == DISPLAYMODE_MINMAX ){
-              lcdsetCursor ( 11, 1 );            // go to the 2nd row
-              lcdprint( getDisplayTemperatureBasic( _maxTemp ) ); // pad string with spaces for centering
+              #ifdef LCD_20X4
+                lcdsetCursor ( 13, 1 );            // go to the 2nd row
+              #else
+                lcdsetCursor ( 11, 1 );            // go to the 2nd row
+              #endif
             }
+            #ifdef LCD_20X4
+              if( currentDisplayMode == DISPLAYMODE_MAIN ){
+                lcdsetCursor ( 13, 2 );
+              } else if( currentDisplayMode == DISPLAYMODE_TARGET ){
+                lcdsetCursor ( 13, 3 );
+              }
+            #endif
+            lcdprint( getDisplayTemperatureBasic( _maxTemp ) );              
           }
           if(currentTemprature <= _minTemp)
           {
             _minTemp = currentTemprature;
             if( currentDisplayMode == DISPLAYMODE_MINMAX ){
-              lcdsetCursor ( 3, 1 );            // go to the 2nd row
-              lcdprint( getDisplayTemperatureBasic( _minTemp ) ); // pad string with spaces for centering
+              #ifdef LCD_20X4
+                lcdsetCursor ( 4, 1 );            // go to the 2nd row
+              #else
+                lcdsetCursor ( 3, 1 );            // go to the 2nd row
+              #endif
             }
+            #ifdef LCD_20X4
+              if( currentDisplayMode == DISPLAYMODE_MAIN ){
+                lcdsetCursor ( 4, 2 );
+              } else if( currentDisplayMode == DISPLAYMODE_TARGET ){
+                lcdsetCursor ( 4, 3 );
+              }
+            #endif
+            lcdprint( getDisplayTemperatureBasic( _minTemp ) );
           }
         }
     }

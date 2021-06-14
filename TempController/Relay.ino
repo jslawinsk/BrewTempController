@@ -35,10 +35,17 @@ void relayControl()
         #endif
         RelayStatus = RELAY_HEAT;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
-          lcdsetCursor ( 3, 1 );            // go to the 2nd row
-          lcdprint( "On " ); 
-          lcdsetCursor ( 13, 1 );            // go to the 2nd row
-          lcdprint( "Off" ); 
+          #ifdef LCD_20X4
+            lcdsetCursor ( 5, 1 );            // go to the 2nd row
+            lcdprint( "On " ); 
+            lcdsetCursor ( 17, 1 );            // go to the 2nd row
+            lcdprint( "Off" ); 
+          #else        
+            lcdsetCursor ( 3, 1 );            // go to the 2nd row
+            lcdprint( "On " ); 
+            lcdsetCursor ( 13, 1 );            // go to the 2nd row
+            lcdprint( "Off" ); 
+          #endif
         }
       }
     }
@@ -53,10 +60,17 @@ void relayControl()
         #endif
         RelayStatus = RELAY_COOL;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
-          lcdsetCursor ( 3, 1 );            // go to the 2nd row
-          lcdprint( "Off" ); 
-          lcdsetCursor ( 13, 1 );            // go to the 2nd row
-          lcdprint( "On " ); 
+            #ifdef LCD_20X4
+              lcdsetCursor ( 5, 1 );            // go to the 2nd row
+              lcdprint( "Off" ); 
+              lcdsetCursor ( 17, 1 );            // go to the 2nd row
+              lcdprint( "On " ); 
+            #else
+              lcdsetCursor ( 3, 1 );            // go to the 2nd row
+              lcdprint( "Off" ); 
+              lcdsetCursor ( 13, 1 );            // go to the 2nd row
+              lcdprint( "On " ); 
+            #endif
         }
       }
     }
@@ -71,13 +85,53 @@ void relayControl()
         #endif
         RelayStatus = RELAY_NONE;
         if( currentDisplayMode == DISPLAYMODE_MAIN ){
-          lcdsetCursor ( 3, 1 );            // go to the 2nd row
-          lcdprint( "Off" ); 
-          lcdsetCursor ( 13, 1 );            // go to the 2nd row
-          lcdprint( "Off" ); 
+          #ifdef LCD_20X4
+            lcdsetCursor ( 5, 1 );            // go to the 2nd row
+            lcdprint( "Off" ); 
+            lcdsetCursor ( 17, 1 );            // go to the 2nd row
+            lcdprint( "Off" ); 
+          #else
+            lcdsetCursor ( 3, 1 );            // go to the 2nd row
+            lcdprint( "Off" ); 
+            lcdsetCursor ( 13, 1 );            // go to the 2nd row
+            lcdprint( "Off" ); 
+         #endif
         }
       }
     }
     relayTimer = millis();
   }
+}
+
+void displayRelayTemplate( int row )
+{
+  lcdsetCursor ( 0,row );
+  #ifdef LCD_20X4
+    lcdprint("Heat: ");
+    lcdsetCursor ( 5, row );
+  #else
+    lcdprint("HT: ");
+    lcdsetCursor ( 3, row );
+  #endif
+  if( RelayStatus == RELAY_HEAT ){
+    lcdprint( "On " ); 
+  }
+  else{
+    lcdprint( "Off" ); 
+  }      
+  #ifdef LCD_20X4
+    lcdsetCursor ( 12, row );
+    lcdprint("Cool:");
+    lcdsetCursor ( 17, row );
+  #else
+    lcdsetCursor ( 10, row );
+    lcdprint("CL:");
+    lcdsetCursor ( 13, row );
+  #endif
+  if( RelayStatus == RELAY_COOL ){
+    lcdprint( "On " ); 
+  }
+  else{
+    lcdprint( "Off" ); 
+  }  
 }

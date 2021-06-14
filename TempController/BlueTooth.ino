@@ -53,9 +53,7 @@ void bluetoothInterface()
           #endif
           targetTemp = strTarget.toFloat();
           controlCommandReceived = true;
-          if( currentDisplayMode == DISPLAYMODE_TARGET ){
-            setTempratureTemplate();
-          }
+          setTempratureTemplate();
         }
         else if( strCommand.startsWith( "CONTROL:" ) ){
           String strControl = strCommand.substring( 8 );

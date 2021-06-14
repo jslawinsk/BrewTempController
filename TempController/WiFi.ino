@@ -7,8 +7,10 @@
 //
 //  TODO: Update The follwoing lines to specify your WiFi credentials
 //
-const char* ssid = "<Update SSID var here>";
-const char* password = "<update NW Password here>";
+// const char* ssid = "<Update SSID var here>";
+// const char* password = "<update NW Password here>";
+const char* ssid = "ORBI25";
+const char* password = "polska564";
 //
 //  TODO: Update the following to specify your desired IP
 //
@@ -96,9 +98,7 @@ void wifiSetup() {
         if( strTarget != "" ){
           targetTemp = strTarget.toFloat();
           controlCommandReceived = true;
-          if( currentDisplayMode == DISPLAYMODE_TARGET ){
-            setTempratureTemplate();
-          }     
+          setTempratureTemplate();
         }   
     }
     int responseType = RESPONSE_HTML;
