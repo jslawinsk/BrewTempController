@@ -7,10 +7,8 @@
 //
 //  TODO: Update The follwoing lines to specify your WiFi credentials
 //
-// const char* ssid = "<Update SSID var here>";
-// const char* password = "<update NW Password here>";
-const char* ssid = "ORBI25";
-const char* password = "polska564";
+const char* ssid = "<Update SSID var here>";
+const char* password = "<update NW Password here>";
 //
 //  TODO: Update the following to specify your desired IP
 //
