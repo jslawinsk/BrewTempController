@@ -55,6 +55,15 @@ void bluetoothInterface()
           controlCommandReceived = true;
           setTempratureTemplate();
         }
+        else if( strCommand.startsWith( "DEVIATION:" ) ){
+          String strDeviation = strCommand.substring( 10 );
+          #ifdef DEBUG
+            Serial.println( "Deviation: " + strDeviation );
+          #endif
+          deviation = strDeviation.toFloat();
+          controlCommandReceived = true;
+          setTempratureTemplate();
+        }
         else if( strCommand.startsWith( "CONTROL:" ) ){
           String strControl = strCommand.substring( 8 );
           if( strControl == "AUTO" ){
