@@ -64,6 +64,15 @@ void bluetoothInterface()
           controlCommandReceived = true;
           setTempratureTemplate();
         }
+        else if( strCommand.startsWith( "CALIBRATION:" ) ){
+          String strCalibration = strCommand.substring( 12 );
+          #ifdef DEBUG
+            Serial.println( "Calibration: " + strCalibration );
+          #endif
+          calibration = strCalibration.toFloat();
+          controlCommandReceived = true;
+          setTempratureTemplate();
+        }
         else if( strCommand.startsWith( "CONTROL:" ) ){
           String strControl = strCommand.substring( 8 );
           if( strControl == "AUTO" ){

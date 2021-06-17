@@ -110,6 +110,17 @@ void wifiSetup() {
           setTempratureTemplate();
         }   
     }
+    else if( querycommand == "setcalibration" ){
+        String strCalibration = getQueryParam( "calibration", "" );
+        #ifdef DEBUG
+          Serial.println( "Calibration: " + calibration );
+        #endif
+        if( strCalibration != "" ){
+          calibration = strCalibration.toFloat();
+          controlCommandReceived = true;
+          setTempratureTemplate();
+        }   
+    }
     int responseType = RESPONSE_HTML;
     String respType = getQueryParam( "responseFormat", "HTML" );
     if( respType == "JSON" ){
@@ -161,7 +172,8 @@ void sendResponsePage( String qCommand, int responseType ) {
       page = page + ", \"heat\":\"" + heat + "\"";
       page = page + ", \"cool\":\"" + cool + "\"";
       page = page + ", \"control\":\"" + control + "\"";
-      page = page + ", \"deviation\":\"" + deviation + "\"";
+      page = page + ", \"deviation\":" + deviation;
+      page = page + ", \"calibration\":" + calibration;
       page = page + "}";
       server.send(200, "application/json", page);
     }
@@ -173,6 +185,7 @@ void sendResponsePage( String qCommand, int responseType ) {
       page = page + "Cool: " + cool + "<br>";
       page = page + "Control: " + control + "<br>";
       page = page + "Deviation: " + deviation + "<br>";
+      page = page + "Calibration: " + calibration + "<br>";
       page = page + "Command: " + qCommand + "<br>";
       page = page +"<a href=\"tempdata\"><button>Temperature Data</button></a>&nbsp;<a href=\"tempdata?responseFormat=JSON\"><button>Temperature JSON</button></a></p>";
       server.send(200, "text/html", page);
