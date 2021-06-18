@@ -121,6 +121,20 @@ void wifiSetup() {
           setTempratureTemplate();
         }   
     }
+    else if( querycommand == "setunits" ){
+        String strType = getQueryParam( "type", "" );
+        #ifdef DEBUG
+          Serial.println( "Units: " + strType );
+        #endif
+        if( strType == "C" ){
+          unit =  UNIT_CELSIUS;
+          setTempratureTemplate();
+        }   
+        else if( strType == "F" ){
+          unit =  UNIT_FARENHEIGHT;
+          setTempratureTemplate();
+        }   
+    }
     int responseType = RESPONSE_HTML;
     String respType = getQueryParam( "responseFormat", "HTML" );
     if( respType == "JSON" ){
@@ -166,6 +180,11 @@ void sendResponsePage( String qCommand, int responseType ) {
       control = "Cool";
     }
 
+    String unitType = "F";
+    if( unit == UNIT_CELSIUS ){
+      unitType = "C";
+    }
+
     if( responseType == RESPONSE_JSON ){
       String page = "{\"temperature\":" + String( currentTemprature );
       page = page + ", \"target\":" + targetTemp;
@@ -174,13 +193,14 @@ void sendResponsePage( String qCommand, int responseType ) {
       page = page + ", \"control\":\"" + control + "\"";
       page = page + ", \"deviation\":" + deviation;
       page = page + ", \"calibration\":" + calibration;
+      page = page + ", \"units\":\"" + unitType + "\"";
       page = page + "}";
       server.send(200, "application/json", page);
     }
     else{
       String page = "<h1>Temperature Sensor Data</h1><p>";
-      page = page + "Temperature: " + getDisplayTemperatureBasic( currentTemprature ) + "<br>";  
-      page = page + "Target: " + getDisplayTemperatureBasic( targetTemp ) + "<br>";
+      page = page + "Temperature: " + getDisplayTemperatureBasic( currentTemprature ) + " " + unitType + "<br>";  
+      page = page + "Target: " + getDisplayTemperatureBasic( targetTemp ) + " " + unitType + "<br>";
       page = page + "Heat: " + heat + "<br>";
       page = page + "Cool: " + cool + "<br>";
       page = page + "Control: " + control + "<br>";

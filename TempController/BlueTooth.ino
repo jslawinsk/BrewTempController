@@ -73,7 +73,22 @@ void bluetoothInterface()
           controlCommandReceived = true;
           setTempratureTemplate();
         }
-        else if( strCommand.startsWith( "CONTROL:" ) ){
+        else if( strCommand.startsWith( "UNITS:" ) ){
+          String strUnits = strCommand.substring( 6 );
+          if( strUnits == "C" ){
+            unit =  UNIT_CELSIUS;
+            setTempratureTemplate();
+          }
+          else if( strUnits == "F" ){
+            unit =  UNIT_FARENHEIGHT;
+            setTempratureTemplate();
+          }
+          #ifdef DEBUG
+            Serial.println( "Control: " + strControl );
+          #endif
+        }
+      }
+      else if( strCommand.startsWith( "CONTROL:" ) ){
           String strControl = strCommand.substring( 8 );
           if( strControl == "AUTO" ){
             controlMode = CONTROL_AUTO;
@@ -90,11 +105,7 @@ void bluetoothInterface()
           #ifdef DEBUG
             Serial.println( "Control: " + strControl );
           #endif
-          /*
-          if( currentDisplayMode == DISPLAYMODE_MAIN ){
-            setTempratureTemplate();
-          } 
-          */         
+          setTempratureTemplate();
         }
       }
       memset(buffer, 0, sizeof(buffer));
