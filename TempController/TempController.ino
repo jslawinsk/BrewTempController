@@ -7,15 +7,15 @@
 //
 // The following are defined for components which are installed
 //
-// #define BLUETOOTH_ENABLED 1
+#define BLUETOOTH_ENABLED 1
 #define ROTARY_ENABLED 1
 #define RELAY_ENABLED 1
-#define WIFI_ENABLED 1
+// #define WIFI_ENABLED 1
 #define LCD_20X4 1    // Comment this line if using 16 x 2 LCD
 //
 // Define the following if using a Lolin D1 Mini, comment the following line for Arduino
 //
-#define D1_MINI 1
+// #define D1_MINI 1
 
 float currentTemprature;  // Current Temprature store in farenheight
 

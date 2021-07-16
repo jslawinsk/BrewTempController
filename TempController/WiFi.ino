@@ -69,7 +69,24 @@ void wifiSetup() {
   server.on("/", [](){
     sendResponsePage( "", RESPONSE_HTML );
   });
-  server.on("/tempdata", [](){
+
+  
+  server.on("/tempdata", HTTP_OPTIONS, []() {
+    #ifdef DEBUG
+      Serial.println( "OPTIONS Request: " );
+    #endif
+    
+    server.sendHeader("Access-Control-Allow-Credentials", "true");
+    server.sendHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, Authorization, Access-Control-Allow-Credentials, Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control");
+    server.sendHeader("access-control-allow-methods", "GET, OPTIONS, POST");
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(204);
+  });
+
+  server.on("/tempdata", HTTP_GET, [](){
+    #ifdef DEBUG
+      Serial.println( "HTTP Request: " );
+    #endif
 
     if (!server.authenticate(www_username, www_password)) {
       return server.requestAuthentication();
@@ -113,7 +130,7 @@ void wifiSetup() {
     else if( querycommand == "setcalibration" ){
         String strCalibration = getQueryParam( "calibration", "" );
         #ifdef DEBUG
-          Serial.println( "Calibration: " + calibration );
+          Serial.println( "Calibration: " + strCalibration );
         #endif
         if( strCalibration != "" ){
           calibration = strCalibration.toFloat();
@@ -184,6 +201,8 @@ void sendResponsePage( String qCommand, int responseType ) {
     if( unit == UNIT_CELSIUS ){
       unitType = "C";
     }
+
+    server.sendHeader("Access-Control-Allow-Origin", "*");
 
     if( responseType == RESPONSE_JSON ){
       String page = "{\"temperature\":" + String( currentTemprature );
