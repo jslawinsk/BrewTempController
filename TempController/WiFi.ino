@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+// #include <WiFi.h>
 
 //
 //  TODO: Update The follwoing lines to specify your WiFi credentials
@@ -28,44 +29,26 @@ ESP8266WebServer server(80);
 const int RESPONSE_HTML = 0;
 const int RESPONSE_JSON = 1;
 
+unsigned long previous_time = 0;
+unsigned long resetDelay = 60000; // 60 second delay
 
 void wifiSetup() {
-//  Serial.begin(115200);
   Serial.begin(9600);
   delay(10);
- 
- 
-  // Connect to WiFi network
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
 
-  IPAddress subnet( 255, 255, 255, 0 );
-  WiFi.config( ip, gateway, subnet );
-  WiFi.begin(ssid, password);
+  wifiConnect();
  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
   // Start the server
   server.begin();
-  Serial.println("Server started");
- 
-  // Print the IP address
-  Serial.print("Use this URL : ");
-  Serial.print("http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("/");
-
+  #ifdef DEBUG        
+    Serial.println("Server started");
+    // Print the IP address
+    Serial.print("Use this URL : ");
+    Serial.print("http://");
+    Serial.print(WiFi.localIP());
+    Serial.println("/");
+  #endif
+  
   server.on("/", [](){
     sendResponsePage( "", RESPONSE_HTML );
   });
@@ -162,13 +145,58 @@ void wifiSetup() {
     delay(1000);
   });
   server.begin();
-  Serial.println("Web server started!"); 
+  #ifdef DEBUG        
+    Serial.println("Web server started!"); 
+  #endif
 }
  
 void wifiLoop() {
+  unsigned long current_time = millis();
+  if( WiFi.status() != WL_CONNECTED ){
+    #ifdef DEBUG        
+      Serial.println("WIFI disconnected reconnecting");
+    #endif
+    wifiConnect();
+    previous_time = millis();
+  }  
+  else if( current_time - previous_time >= resetDelay * 30 ){
+    #ifdef DEBUG        
+      Serial.println("WIFI connection dropped");
+    #endif
+    WiFi.disconnect();
+    previous_time = millis();
+  }  
   server.handleClient();
 }
 
+void wifiConnect() {
+  // Connect to WiFi network
+  #ifdef DEBUG        
+    Serial.println();
+    Serial.println();
+    Serial.print("Connecting to ");
+    Serial.println(ssid);
+  #endif
+  IPAddress subnet( 255, 255, 255, 0 );
+  WiFi.config( ip, gateway, subnet );
+  WiFi.begin(ssid, password);
+ 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    #ifdef DEBUG        
+      Serial.print(".");
+    #endif
+  }
+  #ifdef DEBUG        
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("");
+    Serial.print("Connected to ");
+    Serial.println(ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  #endif  
+}
 
 String getQueryParam( String param, String defaultValue )  { 
 
